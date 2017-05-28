@@ -1,0 +1,139 @@
+
+
+public enum DataError: Error {
+  case empty
+  case minimumOneRow
+  case inconsistentColumnCount
+}
+
+public final class Table {
+
+  private let data: [[Any]]
+  private let configuration: Configuration?
+  
+  public init(data: [[Any]], configuration: Configuration? = nil) {
+    self.data = data
+    self.configuration = configuration
+  }
+  
+  public func table() throws -> String {
+    try validateData()
+    
+    var rows = stringify(data: data)
+    let configuration = makeConfiguration(rows: rows)
+    
+    rows = padRows(rows: rows, configuration: configuration)
+    
+    return renderTable(rows: rows, configuration: configuration)
+  }
+  
+  private func validateData() throws {
+    if data.isEmpty {
+      throw DataError.empty
+    }
+    if data[0].isEmpty {
+      throw DataError.minimumOneRow
+    }
+    
+    let columnCount = data[0].count
+    for columns in data {
+      if columns.count != columnCount {
+        throw DataError.inconsistentColumnCount
+      }
+    }
+  }
+  
+  private func stringify(data: [[Any]]) -> [[String]] {
+    return data.map {
+      $0.map {
+        "\($0)"
+      }
+    }
+  }
+  
+  private func makeConfiguration(rows: [[String]]) -> Configuration {
+    let configuration = Configuration(border: Border(), columns: makeColumns(rows: rows))
+    return configuration
+  }
+  
+  private func makeColumns(rows: [[String]]) -> [Column] {
+    let maxColumnWidthIndex = calculateMaxColumnWidthIndexes(rows: rows)
+    var columns: [Column] = []
+    
+    for i in 0..<rows[0].count {
+      columns.append(Column(alignment: .left, paddingLeft: 1, paddingRight: 1, width: maxColumnWidthIndex[i]))
+    }
+    return columns
+  }
+  
+  private func calculateMaxColumnWidthIndexes(rows: [[String]]) -> [Int] {
+    var columns = Array(repeating: 0, count: rows[0].count)
+
+    for row in rows {
+      let columnWidths = row.map{ $0.characters.count }
+      
+      for (idx, width) in columnWidths.enumerated() {
+        if columns[idx] < width {
+          columns[idx] = width
+        }
+      }
+    }
+    
+    return columns
+  }
+  
+  private func padRows(rows: [[String]], configuration: Configuration) -> [[String]] {
+    return rows.map {
+      $0.enumerated().map {
+        let column = configuration.columns[$0]
+        return " ".repeat(times: column.paddingLeft) + $1 + " ".repeat(times: column.paddingRight)
+      }
+    }
+  }
+  
+  private func renderTable(rows: [[String]], configuration: Configuration) -> String {
+    let columnWidths = rows[0].map{ $0.characters.count }
+    let rowCount = rows.count
+    
+    var output = drawBorderTop(columnWidths: columnWidths, border: configuration.border)
+    
+    for (idx, column) in rows.enumerated() {
+      output.append(drawColumn(column, border: configuration.border))
+      if idx != rowCount - 1 {
+        output.append(drawBorderJoin(columnWidths: columnWidths, border: configuration.border))
+      }
+    }
+    
+    output.append(drawBorderBottom(columnWidths: columnWidths, border: configuration.border))
+    
+    return output
+  }
+  
+  private func drawBorderTop(columnWidths: [Int], border: Border) -> String {
+    return drawBorder(columnWidths: columnWidths, body: border.topBody, join: border.topJoin, left: border.topLeft,
+                      right: border.topRight)
+  }
+  
+  private func drawBorderJoin(columnWidths: [Int], border: Border) -> String {
+    return drawBorder(columnWidths: columnWidths, body: border.joinBody, join: border.joinJoin, left: border.joinLeft,
+                      right: border.joinRight)
+  }
+  
+  private func drawBorderBottom(columnWidths: [Int], border: Border) -> String {
+    return drawBorder(columnWidths: columnWidths, body: border.bottomBody, join: border.bottomJoin, left: border.bottomLeft,
+                      right: border.bottomRight)
+  }
+  
+  private func drawBorder(columnWidths: [Int], body: String, join: String, left: String, right: String) -> String {
+    let columns = columnWidths.map {
+      body.repeat(times: $0)
+    }.joined(separator: join)
+    
+    return left + columns + right + "\n"
+  }
+  
+  private func drawColumn(_ column: [String], border: Border) -> String {
+    return border.bodyLeft + column.joined(separator: border.bodyJoin) + border.bodyRight + "\n"
+  }
+  
+}
