@@ -20,3 +20,38 @@ let package = Package(
     ]
 )
 ```
+
+To use it:
+
+```swift
+import Table
+
+func doSomething() throws {
+    let data = [
+      ["0A", "0B", "0C"],
+      ["1A", "1B", "1C"],
+      ["2A", "2B", "2C"],
+    ]
+
+    let table = try Table(data: data).table()
+
+    print(table)
+}
+
+```
+
+Results in a pretty table:
+
+```
+╔════╤════╤════╗
+║ 0A │ 0B │ 0C ║
+╟────┼────┼────╢
+║ 1A │ 1B │ 1C ║
+╟────┼────┼────╢
+║ 2A │ 2B │ 2C ║
+╚════╧════╧════╝
+```
+
+## Licence
+
+Table is released under the MIT license. See LICENSE for details.

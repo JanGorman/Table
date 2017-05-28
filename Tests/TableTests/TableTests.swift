@@ -29,7 +29,7 @@ class TableTests: XCTestCase {
       ["0A", "0B", "0C"],
       ["1A", "1B", "1C"],
       ["2A", "2B", "2C"],
-      ]
+    ]
 
     var expecation =  "╔════╤════╤════╗\n"
     expecation.append("║ 0A │ 0B │ 0C ║\n")
