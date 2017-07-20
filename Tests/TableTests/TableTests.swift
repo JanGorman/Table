@@ -30,18 +30,45 @@ class TableTests: XCTestCase {
       ["1A", "1B", "1C"],
       ["2A", "2B", "2C"],
     ]
-
-    var expecation =  "╔════╤════╤════╗\n"
-    expecation.append("║ 0A │ 0B │ 0C ║\n")
-    expecation.append("╟────┼────┼────╢\n")
-    expecation.append("║ 1A │ 1B │ 1C ║\n")
-    expecation.append("╟────┼────┼────╢\n")
-    expecation.append("║ 2A │ 2B │ 2C ║\n")
-    expecation.append("╚════╧════╧════╝\n")
     
+    let expectation = """
+    ╔════╤════╤════╗
+    ║ 0A │ 0B │ 0C ║
+    ╟────┼────┼────╢
+    ║ 1A │ 1B │ 1C ║
+    ╟────┼────┼────╢
+    ║ 2A │ 2B │ 2C ║
+    ╚════╧════╧════╝
+
+    """
+
     let table = try Table(data: data).table()
     
-    XCTAssertEqual(table, expecation)
+    XCTAssertEqual(table, expectation)
+  }
+  
+  func testItPads() throws {
+    let data = [
+      ["0A", "0B", "0C"]
+    ]
+    
+    let expectation = """
+    ╔═════════╤══════════════════╤═════════╗
+    ║   0A    │        0B        │   0C    ║
+    ╚═════════╧═════════════════s╧═════════╝
+
+    """
+    
+    let columns = [
+      Column(alignment: .center, paddingLeft: 3, paddingRight: 4),
+      Column(alignment: .center, paddingLeft: 8, paddingRight: 8),
+      Column(alignment: .center, paddingLeft: 3, paddingRight: 4)
+    ]
+    
+    let configuration = Configuration(border: Border(), columns: columns)
+    let table = try Table(data: data, configuration: configuration).table()
+    
+    XCTAssertEqual(table, expectation)
   }
 
   static var allTests = [
@@ -49,6 +76,7 @@ class TableTests: XCTestCase {
     ("testItValidatesEmptyRow", testItValidatesEmptyRow),
     ("testItValidatesInconsistentColumns", testItValidatesInconsistentColumns),
     ("testItReturnsATable", testItReturnsATable),
+    ("testItPads", testItPads),
   ]
 
 }

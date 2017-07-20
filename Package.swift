@@ -1,7 +1,15 @@
-// swift-tools-version:3.1
+// swift-tools-version:4.0
 
 import PackageDescription
 
 let package = Package(
-  name: "Table"
+  name: "Table",
+  targets: [
+    .target(
+      name: "Table",
+      dependencies: []),
+    .testTarget(
+      name: "TableTests",
+      dependencies: ["Table"])
+  ]
 )

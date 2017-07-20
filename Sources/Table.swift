@@ -20,7 +20,7 @@ public final class Table {
     try validateData()
     
     var rows = stringify(data: data)
-    let configuration = makeConfiguration(rows: rows)
+    let configuration = self.configuration ?? makeConfiguration(rows: rows)
     
     rows = padRows(rows: rows, configuration: configuration)
     
