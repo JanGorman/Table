@@ -4,12 +4,15 @@ import PackageDescription
 
 let package = Package(
   name: "Table",
+  dependencies: [],
   targets: [
     .target(
       name: "Table",
-      dependencies: []),
+      dependencies: [],
+      path: "Sources"),
     .testTarget(
       name: "TableTests",
-      dependencies: ["Table"])
+      dependencies: ["Table"],
+      path: "Tests")
   ]
 )

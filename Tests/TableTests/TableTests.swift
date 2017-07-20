@@ -70,6 +70,10 @@ class TableTests: XCTestCase {
     
     XCTAssertEqual(table, expectation)
   }
+  
+  func testItAligns() throws {
+    
+  }
 
   static var allTests = [
     ("testItValidatesEmptyData", testItValidatesEmptyData),
