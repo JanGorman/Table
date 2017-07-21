@@ -15,9 +15,9 @@ import PackageDescription
 let package = Package(
     name: "My awesome CLI tool"
     dependencies: [
-        .Package(
+        .package(
             url: "https://github.com/JanGorman/Table",
-            majorVersion: 1
+            from: "1.0.0"
         )
     ]
 )
