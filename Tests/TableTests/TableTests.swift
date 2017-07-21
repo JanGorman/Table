@@ -51,6 +51,13 @@ class TableTests: XCTestCase {
     let data = [
       ["0A", "0B", "0C"]
     ]
+    let columns = [
+      Column(paddingLeft: 3, paddingRight: 4),
+      Column(paddingLeft: 8, paddingRight: 8),
+      Column(paddingLeft: 3, paddingRight: 4)
+    ]
+    let configuration = Configuration(border: Border(), columns: columns)
+    let table = try Table(data: data, configuration: configuration).table()
     
     let expectation = """
     ╔═════════╤══════════════════╤═════════╗
@@ -59,28 +66,31 @@ class TableTests: XCTestCase {
 
     """
     
-    let columns = [
-      Column(alignment: .center, paddingLeft: 3, paddingRight: 4),
-      Column(alignment: .center, paddingLeft: 8, paddingRight: 8),
-      Column(alignment: .center, paddingLeft: 3, paddingRight: 4)
-    ]
-    
-    let configuration = Configuration(border: Border(), columns: columns)
-    let table = try Table(data: data, configuration: configuration).table()
-    
     XCTAssertEqual(table, expectation)
   }
   
   func testItAligns() throws {
+    let data = [
+      ["0A", "0B", "0C"]
+    ]
     
-  }
+    let columns = [
+      Column(alignment: .left, width: 10),
+      Column(alignment: .center, width: 10),
+      Column(alignment: .right, width: 10)
+    ]
+    
+    let configuration = Configuration(border: Border(), columns: columns)
+    let table = try Table(data: data, configuration: configuration).table()
 
-  static var allTests = [
-    ("testItValidatesEmptyData", testItValidatesEmptyData),
-    ("testItValidatesEmptyRow", testItValidatesEmptyRow),
-    ("testItValidatesInconsistentColumns", testItValidatesInconsistentColumns),
-    ("testItReturnsATable", testItReturnsATable),
-    ("testItPads", testItPads),
-  ]
+    let expectation = """
+    ╔══════════╤══════════╤══════════╗
+    ║0A        │    0B    │        0C║
+    ╚══════════╧══════════╧══════════╝
+
+    """
+    
+    XCTAssertEqual(table, expectation)
+  }
 
 }

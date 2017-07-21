@@ -10,7 +10,7 @@ import Foundation
 
 extension String {
   
-  func `repeat`(times count: Int) -> String {
+  func repeated(times count: Int) -> String {
     return Array(repeating: self, count: count).joined()
   }
   

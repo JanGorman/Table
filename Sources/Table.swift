@@ -21,7 +21,7 @@ public final class Table {
     
     var rows = stringify(data: data)
     let configuration = self.configuration ?? makeConfiguration(rows: rows)
-    
+    rows = alignRows(rows: rows, configuration: configuration)
     rows = padRows(rows: rows, configuration: configuration)
     
     return renderTable(rows: rows, configuration: configuration)
@@ -51,6 +51,52 @@ public final class Table {
     }
   }
   
+  private func alignRows(rows: [[String]], configuration: Configuration) -> [[String]] {
+    return rows.map {
+      $0.enumerated().map {
+        let column = configuration.columns[$0.offset]
+        
+        if let width = column.width, $0.element.count != width {
+          return align(row: $0.element, width: width, alignment: column.alignment ?? .left)
+        }
+        return $0.element
+      }
+    }
+  }
+  
+  private func align(row: String, width: Int, alignment: Alignment) -> String {
+    if row.count == 0 {
+      return " ".repeated(times: width)
+    }
+    
+    var availableWidth = width - row.count
+    if availableWidth < 0 {
+      availableWidth = row.count
+    }
+    
+    switch alignment {
+    case .left:
+      return alignLeft(row: row, availableWidth: availableWidth)
+    case .center:
+      return alignCenter(row: row, availableWidth: availableWidth)
+    case .right:
+      return alignRight(row: row, availableWidth: availableWidth)
+    }
+  }
+  
+  private func alignLeft(row: String, availableWidth: Int) -> String {
+    return row + " ".repeated(times: availableWidth)
+  }
+  
+  private func alignCenter(row: String, availableWidth: Int) -> String {
+    let halfWidth = availableWidth / 2
+    return " ".repeated(times: halfWidth) + row + " ".repeated(times: halfWidth)
+  }
+  
+  private func alignRight(row: String, availableWidth: Int) -> String {
+    return " ".repeated(times: availableWidth) + row
+  }
+  
   private func makeConfiguration(rows: [[String]]) -> Configuration {
     let configuration = Configuration(border: Border(), columns: makeColumns(rows: rows))
     return configuration
@@ -70,7 +116,7 @@ public final class Table {
     var columns = Array(repeating: 0, count: rows[0].count)
 
     for row in rows {
-      let columnWidths = row.map{ $0.characters.count }
+      let columnWidths = row.map{ $0.count }
       
       for (idx, width) in columnWidths.enumerated() {
         if columns[idx] < width {
@@ -86,13 +132,13 @@ public final class Table {
     return rows.map {
       $0.enumerated().map {
         let column = configuration.columns[$0]
-        return " ".repeat(times: column.paddingLeft) + $1 + " ".repeat(times: column.paddingRight)
+        return " ".repeated(times: column.paddingLeft ?? 0) + $1 + " ".repeated(times: column.paddingRight ?? 0)
       }
     }
   }
   
   private func renderTable(rows: [[String]], configuration: Configuration) -> String {
-    let columnWidths = rows[0].map{ $0.characters.count }
+    let columnWidths = rows[0].map{ $0.count }
     let rowCount = rows.count
     
     var output = drawBorderTop(columnWidths: columnWidths, border: configuration.border)
@@ -126,7 +172,7 @@ public final class Table {
   
   private func drawBorder(columnWidths: [Int], body: String, join: String, left: String, right: String) -> String {
     let columns = columnWidths.map {
-      body.repeat(times: $0)
+      body.repeated(times: $0)
     }.joined(separator: join)
     
     return left + columns + right + "\n"

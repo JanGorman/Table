@@ -23,7 +23,7 @@ let package = Package(
 )
 ```
 
-To use it:
+### Basic Usage
 
 ```swift
 import Table
@@ -53,6 +53,71 @@ Results in a pretty table:
 ║ 2A │ 2B │ 2C ║
 ╚════╧════╧════╝
 ```
+
+### Alignment
+
+You can align your table rows by passing in a `Configuration`:
+
+```swift
+import Table
+
+func doSomething() throws {
+    let data = [
+      ["0A", "0B", "0C"],
+    ]
+    // Give alignment and a minimum width
+    let columns = [
+      Column(alignment: .left, width: 10),
+      Column(alignment: .center, width: 10),
+      Column(alignment: .right, width: 10)
+    ]
+    let configuration = Configuration(border: Border(), columns: columns)
+    let table = try Table(data: data).table()
+
+    print(table)
+}
+```
+
+Results in:
+
+```
+╔══════════╤══════════╤══════════╗
+║0A        │    0B    │        0C║
+╚══════════╧══════════╧══════════╝
+```
+
+### Padding
+
+The `Configuration` also allows for padding:
+
+```swift
+import Table
+
+func doSomething() throws {
+    let data = [
+      ["0A", "0B", "0C"],
+    ]
+    let columns = [
+      Column(paddingLeft: 3, paddingRight: 4),
+      Column(paddingLeft: 8, paddingRight: 8),
+      Column(paddingLeft: 3, paddingRight: 4)
+    ]
+    let configuration = Configuration(border: Border(), columns: columns)
+    let table = try Table(data: data).table()
+
+    print(table)
+}
+```
+
+Would give you:
+
+```
+╔═════════╤══════════════════╤═════════╗
+║   0A    │        0B        │   0C    ║
+╚═════════╧══════════════════╧═════════╝
+```
+
+
 
 ## Licence
 
