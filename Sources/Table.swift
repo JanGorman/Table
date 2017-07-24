@@ -98,7 +98,7 @@ public final class Table {
   }
   
   private func makeConfiguration(rows: [[String]]) -> Configuration {
-    let configuration = Configuration(border: Border(), columns: makeColumns(rows: rows))
+    let configuration = Configuration(columns: makeColumns(rows: rows))
     return configuration
   }
   

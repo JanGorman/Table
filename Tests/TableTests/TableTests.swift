@@ -56,7 +56,7 @@ class TableTests: XCTestCase {
       Column(paddingLeft: 8, paddingRight: 8),
       Column(paddingLeft: 3, paddingRight: 4)
     ]
-    let configuration = Configuration(border: Border(), columns: columns)
+    let configuration = Configuration(columns: columns)
     let table = try Table(data: data, configuration: configuration).table()
     
     let expectation = """
@@ -80,13 +80,57 @@ class TableTests: XCTestCase {
       Column(alignment: .right, width: 10)
     ]
     
-    let configuration = Configuration(border: Border(), columns: columns)
+    let configuration = Configuration(columns: columns)
     let table = try Table(data: data, configuration: configuration).table()
 
     let expectation = """
     ╔══════════╤══════════╤══════════╗
     ║0A        │    0B    │        0C║
     ╚══════════╧══════════╧══════════╝
+
+    """
+    
+    XCTAssertEqual(table, expectation)
+  }
+  
+  struct CustomBorder: Border {
+    public let topBody = "─"
+    public let topJoin = "┬"
+    public let topLeft = "┌"
+    public let topRight = "┐"
+    
+    public let bottomBody = "─"
+    public let bottomJoin = "┴"
+    public let bottomLeft = "└"
+    public let bottomRight = "┘"
+    
+    public let bodyLeft = "│"
+    public let bodyRight = "│"
+    public let bodyJoin = "│"
+    
+    public let joinBody = "─"
+    public let joinLeft = "├"
+    public let joinRight = "┤"
+    public let joinJoin = "┼"
+  }
+  
+  func testItRendersOtherBorderType() throws {
+    let data = [
+      ["0A", "0B", "0C"],
+      ["1A", "1B", "1C"]
+    ]
+    
+    let columns = Array(repeating: Column(alignment: .center, width: 7), count: data[0].count * 2)
+    
+    let configuration = Configuration(border: CustomBorder(), columns: columns)
+    let table = try Table(data: data, configuration: configuration).table()
+   
+    let expectation = """
+    ┌──────┬──────┬──────┐
+    │  0A  │  0B  │  0C  │
+    ├──────┼──────┼──────┤
+    │  1A  │  1B  │  1C  │
+    └──────┴──────┴──────┘
 
     """
     

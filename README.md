@@ -1,7 +1,5 @@
 # Swift Tables
 
-## WIP
-
 [![Build Status](https://travis-ci.org/JanGorman/Table.svg?branch=master)](https://travis-ci.org/JanGorman/Table)
 [![SPM](https://img.shields.io/badge/spm-compatible-brightgreen.svg?style=flat)](https://swift.org/package-manager)
 
@@ -71,7 +69,7 @@ func doSomething() throws {
       Column(alignment: .center, width: 10),
       Column(alignment: .right, width: 10)
     ]
-    let configuration = Configuration(border: Border(), columns: columns)
+    let configuration = Configuration(columns: columns)
     let table = try Table(data: data).table()
 
     print(table)
@@ -102,7 +100,7 @@ func doSomething() throws {
       Column(paddingLeft: 8, paddingRight: 8),
       Column(paddingLeft: 3, paddingRight: 4)
     ]
-    let configuration = Configuration(border: Border(), columns: columns)
+    let configuration = Configuration(columns: columns)
     let table = try Table(data: data).table()
 
     print(table)
@@ -117,7 +115,40 @@ Would give you:
 ╚═════════╧══════════════════╧═════════╝
 ```
 
+### Custom Border Style
 
+To use a custom border for your tables simply create a `struct` conforming to the `Border` protocol and pass it as part of a custom `Configuration`. For example:
+
+```swift
+import Table
+
+struct CustomBorder: Border {
+  public let topBody = "─"
+  public let topJoin = "┬"
+  public let topLeft = "┌"
+  public let topRight = "┐"
+
+  public let bottomBody = "─"
+  public let bottomJoin = "┴"
+  public let bottomLeft = "└"
+  public let bottomRight = "┘"
+
+  public let bodyLeft = "│"
+  public let bodyRight = "│"
+  public let bodyJoin = "│"
+
+  public let joinBody = "─"
+  public let joinLeft = "├"
+  public let joinRight = "┤"
+  public let joinJoin = "┼"
+}
+
+func doSomething() throws -> String {
+  …
+  let configuration = Configuration(border: CustomBorder(), columns: columns)
+  return try Table(data: data).table()
+}
+```
 
 ## Licence
 
