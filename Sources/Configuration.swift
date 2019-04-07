@@ -1,9 +1,5 @@
 //
-//  Configuration.swift
-//  Table
-//
 //  Created by Jan GORMAN on 28/05/2017.
-//
 //
 
 import Foundation

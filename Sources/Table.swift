@@ -66,7 +66,7 @@ public final class Table {
   
   private func align(row: String, width: Int, alignment: Alignment) -> String {
     if row.count == 0 {
-      return " ".repeated(times: width)
+      return "\(repeat: " ", width)"
     }
     
     var availableWidth = width - row.count
@@ -85,16 +85,16 @@ public final class Table {
   }
   
   private func alignLeft(row: String, availableWidth: Int) -> String {
-    return row + " ".repeated(times: availableWidth)
+    return "\(row)\(repeat: " ", availableWidth)"
   }
   
   private func alignCenter(row: String, availableWidth: Int) -> String {
     let halfWidth = availableWidth / 2
-    return " ".repeated(times: halfWidth) + row + " ".repeated(times: halfWidth)
+    return "\(repeat: " ", halfWidth)\(row)\(repeat: " ", halfWidth)"
   }
   
   private func alignRight(row: String, availableWidth: Int) -> String {
-    return " ".repeated(times: availableWidth) + row
+    return "\(repeat: " ", availableWidth)\(row)"
   }
   
   private func makeConfiguration(rows: [[String]]) -> Configuration {
@@ -132,7 +132,7 @@ public final class Table {
     return rows.map {
       $0.enumerated().map {
         let column = configuration.columns[$0]
-        return " ".repeated(times: column.paddingLeft ?? 0) + $1 + " ".repeated(times: column.paddingRight ?? 0)
+        return "\(repeat: " ", column.paddingLeft ?? 0)\($1)\(repeat: " ", column.paddingRight ?? 0)"
       }
     }
   }
@@ -172,7 +172,7 @@ public final class Table {
   
   private func drawBorder(columnWidths: [Int], body: String, join: String, left: String, right: String) -> String {
     let columns = columnWidths.map {
-      body.repeated(times: $0)
+      "\(repeat: body, $0)"
     }.joined(separator: join)
     
     return left + columns + right + "\n"
