@@ -98,14 +98,13 @@ public final class Table {
   }
   
   private func makeConfiguration(rows: [[String]]) -> Configuration {
-    let configuration = Configuration(columns: makeColumns(rows: rows))
-    return configuration
+    Configuration(columns: makeColumns(rows: rows))
   }
   
   private func makeColumns(rows: [[String]]) -> [Column] {
     let maxColumnWidthIndex = calculateMaxColumnWidthIndexes(rows: rows)
     return Array(unsafeUninitializedCapacity: rows[0].count) { columns, initializedCount in
-      for i in 0..<rows[0].count {
+      columns = (0..<rows[0].count).reduce(into: columns) { columns, i in
         columns[i] = Column(alignment: .left, paddingLeft: 1, paddingRight: 1, width: maxColumnWidthIndex[i])
       }
       initializedCount = rows[0].count
@@ -116,8 +115,8 @@ public final class Table {
     Array(unsafeUninitializedCapacity: rows[0].count) { columns, initializedCount in
       for row in rows {
         let columnWidths = row.map{ $0.count }
-
-        for (idx, width) in columnWidths.enumerated() {
+        columns = columnWidths.enumerated().reduce(into: columns) { columns, arg1 in
+          let (idx, width) = arg1
           columns[idx] = width
         }
       }
@@ -139,14 +138,15 @@ public final class Table {
     let rowCount = rows.count
     
     var output = drawBorderTop(columnWidths: columnWidths, border: configuration.border)
-    
-    for (idx, column) in rows.enumerated() {
+
+    output = rows.enumerated().reduce(into: output) { output, arg1 in
+      let (idx, column) = arg1
       output.append(drawColumn(column, border: configuration.border))
       if idx != rowCount - 1 {
         output.append(drawBorderJoin(columnWidths: columnWidths, border: configuration.border))
       }
     }
-    
+
     output.append(drawBorderBottom(columnWidths: columnWidths, border: configuration.border))
     
     return output

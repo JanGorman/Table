@@ -1,5 +1,5 @@
 import XCTest
-@testable import Table
+import Table
 
 class TableTests: XCTestCase {
   
