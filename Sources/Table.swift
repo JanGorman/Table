@@ -85,7 +85,7 @@ public final class Table {
   }
   
   private func alignLeft(row: String, availableWidth: Int) -> String {
-    return "\(row)\(repeat: " ", availableWidth)"
+    "\(row)\(repeat: " ", availableWidth)"
   }
   
   private func alignCenter(row: String, availableWidth: Int) -> String {
@@ -94,7 +94,7 @@ public final class Table {
   }
   
   private func alignRight(row: String, availableWidth: Int) -> String {
-    return "\(repeat: " ", availableWidth)\(row)"
+    "\(repeat: " ", availableWidth)\(row)"
   }
   
   private func makeConfiguration(rows: [[String]]) -> Configuration {
@@ -104,33 +104,30 @@ public final class Table {
   
   private func makeColumns(rows: [[String]]) -> [Column] {
     let maxColumnWidthIndex = calculateMaxColumnWidthIndexes(rows: rows)
-    var columns: [Column] = []
-    
-    for i in 0..<rows[0].count {
-      columns.append(Column(alignment: .left, paddingLeft: 1, paddingRight: 1, width: maxColumnWidthIndex[i]))
+    return Array(unsafeUninitializedCapacity: rows[0].count) { columns, initializedCount in
+      for i in 0..<rows[0].count {
+        columns[i] = Column(alignment: .left, paddingLeft: 1, paddingRight: 1, width: maxColumnWidthIndex[i])
+      }
+      initializedCount = rows[0].count
     }
-    return columns
   }
   
   private func calculateMaxColumnWidthIndexes(rows: [[String]]) -> [Int] {
-    var columns = Array(repeating: 0, count: rows[0].count)
+    Array(unsafeUninitializedCapacity: rows[0].count) { columns, initializedCount in
+      for row in rows {
+        let columnWidths = row.map{ $0.count }
 
-    for row in rows {
-      let columnWidths = row.map{ $0.count }
-      
-      for (idx, width) in columnWidths.enumerated() {
-        if columns[idx] < width {
+        for (idx, width) in columnWidths.enumerated() {
           columns[idx] = width
         }
       }
+      initializedCount = rows[0].count
     }
-    
-    return columns
   }
   
   private func padRows(rows: [[String]], configuration: Configuration) -> [[String]] {
-    return rows.map {
-      $0.enumerated().map {
+    rows.map { row in
+      row.enumerated().map {
         let column = configuration.columns[$0]
         return "\(repeat: " ", column.paddingLeft ?? 0)\($1)\(repeat: " ", column.paddingRight ?? 0)"
       }
@@ -156,18 +153,15 @@ public final class Table {
   }
   
   private func drawBorderTop(columnWidths: [Int], border: Border) -> String {
-    return drawBorder(columnWidths: columnWidths, body: border.topBody, join: border.topJoin, left: border.topLeft,
-                      right: border.topRight)
+    drawBorder(columnWidths: columnWidths, body: border.topBody, join: border.topJoin, left: border.topLeft, right: border.topRight)
   }
   
   private func drawBorderJoin(columnWidths: [Int], border: Border) -> String {
-    return drawBorder(columnWidths: columnWidths, body: border.joinBody, join: border.joinJoin, left: border.joinLeft,
-                      right: border.joinRight)
+    drawBorder(columnWidths: columnWidths, body: border.joinBody, join: border.joinJoin, left: border.joinLeft, right: border.joinRight)
   }
   
   private func drawBorderBottom(columnWidths: [Int], border: Border) -> String {
-    return drawBorder(columnWidths: columnWidths, body: border.bottomBody, join: border.bottomJoin, left: border.bottomLeft,
-                      right: border.bottomRight)
+    drawBorder(columnWidths: columnWidths, body: border.bottomBody, join: border.bottomJoin, left: border.bottomLeft, right: border.bottomRight)
   }
   
   private func drawBorder(columnWidths: [Int], body: String, join: String, left: String, right: String) -> String {
@@ -179,7 +173,7 @@ public final class Table {
   }
   
   private func drawColumn(_ column: [String], border: Border) -> String {
-    return border.bodyLeft + column.joined(separator: border.bodyJoin) + border.bodyRight + "\n"
+    border.bodyLeft + column.joined(separator: border.bodyJoin) + border.bodyRight + "\n"
   }
   
 }
