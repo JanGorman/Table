@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/JanGorman/Table/workflows/CI/badge.svg)](https://github.com/JanGorman/Table/actions?query=workflow%3ACI)
 [![SPM](https://img.shields.io/badge/spm-compatible-brightgreen.svg?style=flat)](https://swift.org/package-manager)
+[![codecov](https://codecov.io/gh/JanGorman/Table/branch/master/graph/badge.svg)](https://codecov.io/gh/JanGorman/Table)
 
 Working on CLI tools in Swift? Need to display tables? Continue reading.
 
