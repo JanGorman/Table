@@ -1,6 +1,6 @@
 # Swift Tables
 
-[![Build Status](https://travis-ci.org/JanGorman/Table.svg?branch=master)](https://travis-ci.org/JanGorman/Table)
+[![CI](https://github.com/JanGorman/Table/workflows/CI/badge.svg)](https://github.com/JanGorman/Table/actions?query=workflow%3ACI)
 [![SPM](https://img.shields.io/badge/spm-compatible-brightgreen.svg?style=flat)](https://swift.org/package-manager)
 
 Working on CLI tools in Swift? Need to display tables? Continue reading.
